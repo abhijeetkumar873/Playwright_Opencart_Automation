@@ -1,0 +1,5 @@
+com\qa\opencard\Factory\PlaywrightFactroy.class
+com\qa\opencart\pages\HomePage.class
+com\qa\opencart\pages\SignUpPage.class
+com\qa\opencart\constants\AppConstants.class
+com\qa\opencart\pages\LoginPage.class
