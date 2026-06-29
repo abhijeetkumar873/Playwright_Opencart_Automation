@@ -1,59 +1,70 @@
-pipeline 
-{
+```groovy
+pipeline {
+
     agent any
-    
-    tools{
-    	maven 'MAVEN1'
+
+    tools {
+        maven 'MAVEN1'
+    }
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                git branch: 'main',
+                url: 'https://github.com/abhijeetkumar873/Playwright_Opencart_Automation.git'
+            }
         }
 
-    stages 
-    {
-        stage('Build') 
-        {
-            steps
-            {
-                 git 'https://github.com/jglick/simple-maven-project-with-tests.git'
-                 sh "mvn -Dmaven.test.failure.ignore=true clean package"
-            }
-            post 
-            {
-                success
-                {
-                    junit '**/target/surefire-reports/TEST-*.xml'
-                    archiveArtifacts 'target/*.jar'
-                }
-            }
-        }
-        
-        
-        
-        stage("Deploy to QA"){
-            steps{
-                echo("deploy to qa")
-            }
-        }
-                
-        stage('Regression Automation Test') {
+        stage('Build') {
             steps {
-                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                    git 'https://github.com/abhijeetkumar873/Playwright_Opencart_Automation'
-                    sh "mvn clean test -Dsurefire.suiteXmlFiles=testng_regressions.xml"
-                    
+                bat 'mvn clean install'
+            }
+
+            post {
+                always {
+                    junit '**/target/surefire-reports/*.xml'
+                }
+
+                success {
+                    archiveArtifacts artifacts: 'target/*.jar'
                 }
             }
         }
-        
-        
-        stage('Publish Extent Report'){
-            steps{
-                     publishHTML([allowMissing: false,
-                                  alwaysLinkToLastBuild: false, 
-                                  keepAll: true, 
-                                  reportDir: 'build', 
-                                  reportFiles: 'TestExecutionReport.html', 
-                                  reportName: 'HTML Extent Report', 
-                                  reportTitles: ''])
+
+        stage('Deploy to QA') {
+            steps {
+                echo 'Deploy to QA'
             }
-        }    
+        }
+
+        stage('Regression Automation Test') {
+
+            steps {
+
+                catchError(buildResult: 'SUCCESS',
+                           stageResult: 'FAILURE') {
+
+                    bat 'mvn test -Dsurefire.suiteXmlFiles=testng_Regrssion.xml'
+                }
+            }
+        }
+
+        stage('Publish Extent Report') {
+
+            steps {
+
+                publishHTML([
+                    allowMissing: true,
+                    alwaysLinkToLastBuild: true,
+                    keepAll: true,
+                    reportDir: 'test-output',
+                    reportFiles: 'TestExecutionReport.html',
+                    reportName: 'Extent Report'
+                ])
+            }
+        }
+
     }
 }
+```
