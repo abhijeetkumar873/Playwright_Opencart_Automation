@@ -41,7 +41,7 @@ stages {
                 buildResult: 'SUCCESS',
                 stageResult: 'FAILURE'
             ) {
-				git 'https://github.com/naveenanimation20/Playwright-Java-PageObjectModel'
+				git 'https://github.com/abhijeetkumar873/Playwright_Opencart_Automation'
                 bat 'mvn test -Dsurefire.suiteXmlFiles=.//testng_Regression.xml'
             }
         }
