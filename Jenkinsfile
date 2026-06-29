@@ -12,22 +12,19 @@ pipeline {
 
             steps {
 
-                git branch: 'main',
-                    url: 'https://github.com/abhijeetkumar873/Playwright_Opencart_Automation.git'
+                git 'https://github.com/jglick/simple-maven-project-with-tests.git'
 
-                bat 'mvn clean install'
+                bat 'mvn -Dmaven.test.failure.ignore=true clean package'
             }
 
             post {
 
                 always {
-                    junit allowEmptyResults: true,
-                          testResults: '**/target/surefire-reports/*.xml'
+                    junit '**/target/surefire-reports/*.xml'
                 }
 
                 success {
-                    archiveArtifacts artifacts: 'target/*.jar',
-                                     fingerprint: true
+                    archiveArtifacts artifacts: 'target/*.jar'
                 }
             }
         }
@@ -42,28 +39,9 @@ pipeline {
 
             steps {
 
-                catchError(
-                    buildResult: 'SUCCESS',
-                    stageResult: 'FAILURE'
-                ) {
-
-                    bat 'mvn test -Dsurefire.suiteXmlFiles=testng_Regression.xml'
-                }
-            }
-        }
-
-        stage('Publish Extent Report') {
-
-            steps {
-
-                publishHTML([
-                    allowMissing: true,
-                    alwaysLinkToLastBuild: true,
-                    keepAll: true,
-                    reportDir: 'test-output',
-                    reportFiles: 'TestExecutionReport.html',
-                    reportName: 'Extent Report'
-                ])
+                git 'https://github.com/abhijeetkumar873/Playwright_Opencart_Automation.git'
+                bat 'dir'
+                  bat 'mvn clean test -Dsurefire.suiteXmlFiles=.//testng_Regrssion.xml'
             }
         }
     }
