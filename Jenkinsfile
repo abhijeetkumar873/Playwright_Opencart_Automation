@@ -1,5 +1,50 @@
 pipeline {
 
+agent any
+
+tools {
+    maven 'MAVEN1'
+}
+
+stages {
+
+    stage('Build') {
+        steps {
+            bat 'mvn clean install'
+        }
+
+        post {
+
+            always {
+                junit allowEmptyResults: true,
+                      testResults: '**/target/surefire-reports/*.xml'
+            }
+
+            success {
+                archiveArtifacts artifacts: 'target/*.jar',
+                                 fingerprint: true
+            }
+        }
+    }
+
+    stage('Deploy to QA') {
+        steps {
+            echo 'Deploy to QA'
+        }
+    }
+
+    stage('Regression Automation Test') {
+
+        steps {
+
+            catchError(
+                buildResult: 'SUCCESS',
+                stageResult: 'FAILURE'
+            ) {
+				git 'https://github.com/naveenanimation20/Playwright-Java-PageObjectModel'
+
+                bat 'pipeline {
+
     agent any
 
     tools {
@@ -10,7 +55,7 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git branch: 'main',
+                git branch: 'master',
                 url: 'https://github.com/abhijeetkumar873/Playwright_Opencart_Automation.git'
             }
         }
@@ -40,7 +85,7 @@ pipeline {
 
         stage('Regression Automation Test') {
             steps {
-                bat 'mvn test -Dsurefire.suiteXmlFiles=.//testng_Regression.xml'
+                bat 'mvn clean test -Dsurefire.suiteXmlFiles=.//testng_Regrssion.xml'
             }
         }
 
@@ -57,4 +102,25 @@ pipeline {
             }
         }
     }
+}'
+            }
+        }
+    }
+
+    stage('Publish Extent Report') {
+
+        steps {
+
+            publishHTML([
+                allowMissing: true,
+                alwaysLinkToLastBuild: true,
+                keepAll: true,
+                reportDir: 'test-output',
+                reportFiles: 'TestExecutionReport.html',
+                reportName: 'Extent Report'
+            ])
+        }
+    }
+}
+
 }
