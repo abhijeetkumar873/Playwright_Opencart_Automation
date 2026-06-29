@@ -10,7 +10,7 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git branch: 'master',
+                git branch: 'main',
                 url: 'https://github.com/abhijeetkumar873/Playwright_Opencart_Automation.git'
             }
         }
@@ -40,7 +40,7 @@ pipeline {
 
         stage('Regression Automation Test') {
             steps {
-                bat 'mvn clean test -Dsurefire.suiteXmlFiles=.//testng_Regrssion.xml'
+                bat 'mvn test -Dsurefire.suiteXmlFiles=testng_Regression.xml'
             }
         }
 
