@@ -9,13 +9,15 @@
 <listener class-name="com.qa.opencart.listners.ExtentReportListener"/> 
 </listeners>
 
-    <test name="Open Cart Home Page Test">
+    <test name="Open Cart Home Page Test_chrome">
+		<parameter name="browser" value="chrome" />
         <classes>
             <class name="com.qa.opencart.tests.HomePageTest"/>
         </classes>
 
     </test>
-    <test name="Open Cart Login Page Test">
+    	<test name="Open Cart Login Page Test_chrome">
+		<parameter name="browser" value="chrome" />
 
         <classes>
             <class name="com.qa.opencart.tests.LoginPageTest"/>

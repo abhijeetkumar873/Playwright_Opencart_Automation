@@ -8,7 +8,7 @@ import com.qa.opencart.constants.AppConstants;
 
 public class LoginPageTest extends BaseTest
 {
-	@Test(priority = 1)
+	@Test
 	public void loginPageNavigationTest()
 	{
 		loginPage = homePage.navigateToLoginPage();
@@ -17,15 +17,19 @@ public class LoginPageTest extends BaseTest
 		Assert.assertEquals(accountPageTitle, AppConstants.Account_Page_Title);
 		
 	}
-	@Test (priority = 2)
+	@Test (dependsOnMethods = "loginPageNavigationTest")
 	public void loginWithvalidCreds() throws InterruptedException
 	{
 	
 		loginPage.loginWithValidCreds(prop.getProperty("username").trim(), prop.getProperty("password").trim());
 		String loginPageTitle= loginPage.loginPageTitle();
-		
 		Assert.assertEquals(loginPageTitle, AppConstants.Login_Page_Title);
 
+	}
+	@Test(dependsOnMethods = "loginPageNavigationTest")
+	public void forgotPwdLinkExistTest() throws InterruptedException {
+		Thread.sleep(2000);
+		Assert.assertTrue(loginPage.isForgotPwdlinkExist());
 	}
 
 }

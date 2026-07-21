@@ -36,6 +36,7 @@ public class LoginPage {
 			page.fill(emailID, appEmail);
 			page.fill(password, appPassword);
 			page.click(clickLoginBtn);
+			
 			if(page.isVisible(logoutButton))
 			{
 				System.out.println("User is successfully logged in...");
